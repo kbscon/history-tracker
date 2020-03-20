@@ -62,7 +62,9 @@ trait HistoryTracker
 
         return (new Collection($history->getFillable()))
             ->reduce(function ($history, $attribute) {
-                tap($history)->fill([$attribute => $this->{$attribute}]);
-                }, $history);
+                $history->{$attribute} = $this->{$attribute};
+
+                return $history;
+            }, $history);
     }
 }
