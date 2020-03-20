@@ -11,12 +11,17 @@ trait HistoryTracker
 
     public static function bootHistoryTracker()
     {
-        self::created(fn ($model) => $model->attemptHistoryCreate());
+        self::created(function ($model) {
+            $model->attemptHistoryCreate();
+        });
 
-        self::updated(fn ($model) => $model->attemptHistoryCreate());
+        self::updated(function ($model) {
+            $model->attemptHistoryCreate();
+        });
 
-        self::deleted(fn ($model) => $model
-            ->attemptHistoryCreate(method_exists($model, 'bootSoftDeletes')));
+        self::deleted(function ($model) {
+            $model->attemptHistoryCreate(method_exists($model, 'bootSoftDeletes'));
+        });
     }
 
     public function histories()
@@ -56,7 +61,8 @@ trait HistoryTracker
         $history = new $this->historyModel();
 
         return (new Collection($history->getFillable()))
-            ->reduce(fn ($history, $attribute) => tap($history)
-                ->fill([$attribute => $this->{$attribute}]), $history);
+            ->reduce(function ($history, $attribute) {
+                tap($history)->fill([$attribute => $this->{$attribute}]);
+                }, $history);
     }
 }
